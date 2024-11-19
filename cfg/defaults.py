@@ -568,15 +568,15 @@ _C.DETECTION.ROI_XFORM_RESOLUTION = 7
 _C.AVA = CfgNode()
 
 # Directory path of frames.
-# _C.AVA.FRAME_DIR = "/mnt/fair-flash3-east/ava_trainval_frames.img/"
-_C.AVA.FRAME_DIR = "/usr/home/sut/datasets/AVA/frames/"
+_C.AVA.FRAME_DIR = "/mnt/fair-flash3-east/ava_trainval_frames.img/"
+# _C.AVA.FRAME_DIR = "F:/xiangmu/actiondetection/Aar_v1/frames/"
 
 # Directory path for files of frame lists.
 # _C.AVA.FRAME_LIST_DIR = (
 #     "/mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/"
 # )
 _C.AVA.FRAME_LIST_DIR = (
-    "/usr/home/sut/datasets/AVA/frame_lists/"
+    "F:/xiangmu/actiondetection/Aar_v1/frame_lists/"
 )
 
 # Directory path for annotation files.
@@ -584,7 +584,7 @@ _C.AVA.FRAME_LIST_DIR = (
 #     "/mnt/vol/gfsai-flash3-east/ai-group/users/haoqifan/ava/frame_list/"
 # )
 _C.AVA.ANNOTATION_DIR = (
-    "/usr/home/sut/datasets/AVA/annotations/"
+    "F:/xiangmu/actiondetection/Aar_v1/annotations/"
 )
 
 # Filenames of training samples list files.
@@ -596,8 +596,8 @@ _C.AVA.TEST_LISTS = ["val.csv"]
 # Filenames of box list files for training. Note that we assume files which
 # contains predicted boxes will have a suffix "predicted_boxes" in the
 # filename.
-_C.AVA.TRAIN_GT_BOX_LISTS = ["ava_train_v2.2.csv"]  # change to 2.1 if need
-_C.AVA.VAL_GT_BOX_LISTS = ["ava_val_v2.2.csv"]  # change to 2.1 if need
+_C.AVA.TRAIN_GT_BOX_LISTS = ["train.csv"]  # change to 2.1 if need
+_C.AVA.VAL_GT_BOX_LISTS = ["val.csv"]  # change to 2.1 if need
 _C.AVA.TRAIN_PREDICT_BOX_LISTS = []
 
 # Filenames of box list files for test.

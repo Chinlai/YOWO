@@ -5,6 +5,77 @@ from core.utils import *
 from datasets.meters import AVAMeter
 
 
+def train_aar(cfg, epoch, model, train_loader, loss_module, optimizer):
+    t0 = time.time()
+    loss_module.reset_meters()
+    l_loader = len(train_loader)
+
+    model.train()
+    for batch_idx, batch in enumerate(train_loader):
+        data = batch['clip'].cuda()
+        target = {'cls': batch['cls'], 'boxes': batch['boxes']}
+        output = model(data)
+        loss = loss_module(output, target, epoch, batch_idx, l_loader)
+
+        loss.backward()
+        steps = cfg.TRAIN.TOTAL_BATCH_SIZE // cfg.TRAIN.BATCH_SIZE
+        if batch_idx % steps == 0:
+            optimizer.step()
+            optimizer.zero_grad()
+
+        # save result every 1000 batches
+        if batch_idx % 2000 == 0: # From time to time, reset averagemeters to see improvements
+            loss_module.reset_meters()
+
+    t1 = time.time()
+    logging('trained with %f samples/s' % (len(train_loader.dataset)/(t1-t0)))
+    print('')
+
+
+@torch.no_grad()
+def test_aar(cfg, epoch, model, test_loader):
+    # Test parameters
+    num_classes = cfg.MODEL.NUM_CLASSES
+    anchors = [float(i) for i in cfg.SOLVER.ANCHORS]
+    num_anchors = cfg.SOLVER.NUM_ANCHORS
+    nms_thresh = 0.5
+    conf_thresh_valid = 0.005
+
+    nbatch = len(test_loader)
+    meter = AVAMeter(cfg, cfg.TRAIN.MODE, 'latest_detection.json')
+
+    model.eval()
+    for batch_idx, batch in enumerate(test_loader):
+        data = batch['clip'].cuda()
+        target = {'cls': batch['cls'], 'boxes': batch['boxes']}
+
+        with torch.no_grad():
+            output = model(data)
+            metadata = batch['metadata'].cpu().numpy()
+
+            preds = []
+            all_boxes = get_region_boxes_ava(output, conf_thresh_valid, num_classes, anchors, num_anchors, 0, 1)
+            for i in range(output.size(0)):
+                boxes = all_boxes[i]
+                boxes = nms(boxes, nms_thresh)
+
+                for box in boxes:
+                    x1 = float(box[0] - box[2] / 2.0)
+                    y1 = float(box[1] - box[3] / 2.0)
+                    x2 = float(box[0] + box[2] / 2.0)
+                    y2 = float(box[1] + box[3] / 2.0)
+                    det_conf = float(box[4])
+                    cls_out = [det_conf * x.cpu().numpy() for x in box[5]]
+                    preds.append([[x1, y1, x2, y2], cls_out, metadata[i][:2].tolist()])
+
+        meter.update_stats(preds)
+        logging("[%d/%d]" % (batch_idx, nbatch))
+
+    mAP = meter.evaluate_ava()
+    logging("mode: {} -- mAP: {}".format(meter.mode, mAP))
+
+    return mAP
+
 
 def train_ava(cfg, epoch, model, train_loader, loss_module, optimizer):
     t0 = time.time()
@@ -63,11 +134,11 @@ def train_ucf24_jhmdb21(cfg, epoch, model, train_loader, loss_module, optimizer)
 
 @torch.no_grad()
 def test_ava(cfg, epoch, model, test_loader):
-     # Test parameters
-    num_classes       = cfg.MODEL.NUM_CLASSES
-    anchors           = [float(i) for i in cfg.SOLVER.ANCHORS]
-    num_anchors       = cfg.SOLVER.NUM_ANCHORS
-    nms_thresh        = 0.5
+    # Test parameters
+    num_classes = cfg.MODEL.NUM_CLASSES
+    anchors = [float(i) for i in cfg.SOLVER.ANCHORS]
+    num_anchors = cfg.SOLVER.NUM_ANCHORS
+    nms_thresh = 0.5
     conf_thresh_valid = 0.005
 
     nbatch = len(test_loader)
@@ -87,15 +158,15 @@ def test_ava(cfg, epoch, model, test_loader):
             for i in range(output.size(0)):
                 boxes = all_boxes[i]
                 boxes = nms(boxes, nms_thresh)
-                
+
                 for box in boxes:
-                    x1 = float(box[0]-box[2]/2.0)
-                    y1 = float(box[1]-box[3]/2.0)
-                    x2 = float(box[0]+box[2]/2.0)
-                    y2 = float(box[1]+box[3]/2.0)
+                    x1 = float(box[0] - box[2] / 2.0)
+                    y1 = float(box[1] - box[3] / 2.0)
+                    x2 = float(box[0] + box[2] / 2.0)
+                    y2 = float(box[1] + box[3] / 2.0)
                     det_conf = float(box[4])
                     cls_out = [det_conf * x.cpu().numpy() for x in box[5]]
-                    preds.append([[x1,y1,x2,y2], cls_out, metadata[i][:2].tolist()])
+                    preds.append([[x1, y1, x2, y2], cls_out, metadata[i][:2].tolist()])
 
         meter.update_stats(preds)
         logging("[%d/%d]" % (batch_idx, nbatch))
@@ -104,8 +175,6 @@ def test_ava(cfg, epoch, model, test_loader):
     logging("mode: {} -- mAP: {}".format(meter.mode, mAP))
 
     return mAP
-
-
 
 @torch.no_grad()
 def test_ucf24_jhmdb21(cfg, epoch, model, test_loader):

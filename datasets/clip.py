@@ -144,9 +144,9 @@ def load_data_detection(base_path, imgpath, train, train_dur, sampling_rate, sha
     im_split = imgpath.split('/')
     num_parts = len(im_split)
     im_ind = int(im_split[num_parts-1][0:5])
-    labpath = os.path.join(base_path, 'labels', im_split[0], im_split[1] ,'{:05d}.txt'.format(im_ind))
+    labpath = os.path.join(base_path, im_split[0], im_split[1] ,'{:05d}.txt'.format(im_ind))
 
-    img_folder = os.path.join(base_path, 'rgb-images', im_split[0], im_split[1])
+    img_folder = os.path.join(base_path, 'rgb-images', im_split[1])
     if dataset_use == 'ucf24':
         max_num = len(os.listdir(img_folder))
     elif dataset_use == 'jhmdb21':
@@ -170,9 +170,9 @@ def load_data_detection(base_path, imgpath, train, train_dur, sampling_rate, sha
             i_temp = max_num
 
         if dataset_use == 'ucf24':
-            path_tmp = os.path.join(base_path, 'rgb-images', im_split[0], im_split[1] ,'{:05d}.jpg'.format(i_temp))
+            path_tmp = os.path.join(base_path, 'rgb-images', im_split[1], '{:05d}.jpg'.format(i_temp))
         elif dataset_use == 'jhmdb21':
-            path_tmp = os.path.join(base_path, 'rgb-images', im_split[0], im_split[1] ,'{:05d}.png'.format(i_temp))
+            path_tmp = os.path.join(base_path, 'rgb-images', im_split[0], im_split[1],'{:05d}.png'.format(i_temp))
 
         clip.append(Image.open(path_tmp).convert('RGB'))
 
