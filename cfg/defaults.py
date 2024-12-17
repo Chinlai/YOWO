@@ -596,8 +596,8 @@ _C.AVA.TEST_LISTS = ["val.csv"]
 # Filenames of box list files for training. Note that we assume files which
 # contains predicted boxes will have a suffix "predicted_boxes" in the
 # filename.
-_C.AVA.TRAIN_GT_BOX_LISTS = ["train.csv"]  # change to 2.1 if need
-_C.AVA.VAL_GT_BOX_LISTS = ["val.csv"]  # change to 2.1 if need
+_C.AVA.TRAIN_GT_BOX_LISTS = ["ava_train_v2.2.csv"]  # change to 2.1 if need
+_C.AVA.VAL_GT_BOX_LISTS = ["ava_val_v2.2.csv"]  # change to 2.1 if need
 _C.AVA.TRAIN_PREDICT_BOX_LISTS = []
 
 # Filenames of box list files for test.

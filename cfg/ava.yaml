@@ -1,5 +1,5 @@
 TRAIN:
-  RESUME_PATH: "/usr/home/sut/YOWO/backup/ava/yowo_ava_32f_s1_best_ap_01905.pth"
+  RESUME_PATH: '/data/chenlei/YOWO/backup/ava/yowo_ava_32f_best.pth'
   DATASET: ava  # `ava`, `ucf24` or `jhmdb21`
   BATCH_SIZE: 6
   TOTAL_BATCH_SIZE: 128
@@ -8,6 +8,7 @@ TRAIN:
   MODE: "val"  # `train`, `test` or `val`
   BEGIN_EPOCH: 1
   END_EPOCH: 10
+  CHECKPOINT_PERIOD: 1
   CLASS_RATIO_FILE: "cfg/ava_categories_ratio.json"
   USE_GROUNDTRUTH: False
   USE_SLOWFAST: False
@@ -22,6 +23,10 @@ SOLVER:
   LR_DECAY_RATE: 0.5
   ANCHORS: [0.71626, 2.13583, 1.28967, 4.15014, 2.12714, 5.09344, 3.27212, 5.87423, 5.16303, 6.33821]
 AVA:
+  FRAME_DIR: "/data/chenlei/dataset/AVA_Dataset/frames/"
+  FRAME_LIST_DIR: ("/data/chenlei/dataset/AVA_Dataset/frame_lists/")
+  ANNOTATION_DIR: "/data/chenlei/dataset/AVA_Dataset/annotations/ava_v2.2/"
+  LABEL_MAP_FILE: "ava_action_list_v2.2.pbtxt"
   BGR: False
   DETECTION_SCORE_THRESH: 0.8
   TEST_PREDICT_BOX_LISTS: ["person_box_67091280_iou90/ava_detection_val_boxes_and_labels.csv"]

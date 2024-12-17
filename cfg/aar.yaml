@@ -28,7 +28,7 @@ AVA:
   LABEL_MAP_FILE: "aar_activity.pbtxt"
   BGR: False
   DETECTION_SCORE_THRESH: 0.8
-  TEST_PREDICT_BOX_LISTS: ["person_box_67091280_iou90/ava_detection_val_boxes_and_labels.csv"]
+#  TEST_PREDICT_BOX_LISTS: ["person_box_67091280_iou90/ava_detection_val_boxes_and_labels.csv"]
   GROUNDTRUTH_FILE: "val.csv"
   FULL_TEST_ON_VAL: True
 MODEL:
@@ -43,7 +43,7 @@ WEIGHTS:
 DATA_LOADER:
   NUM_WORKERS: 8
   PIN_MEMORY: True
-BACKUP_DIR: "backup/ava"
+BACKUP_DIR: "backup/aar"
 DEMO:
   ENABLE: False
   OUT_PATH: "aar_detections/videos"
